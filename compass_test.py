@@ -16,7 +16,7 @@ while True:
     print('Acceleration (m/s^2): ({0:10.3f}, {1:10.3f}, {2:10.3f})'.format(acc_x, acc_y, acc_z))
     print('Magnetometer (gauss): ({0:10.3f}, {1:10.3f}, {2:10.3f})'.format(mag_x, mag_y, mag_z))
     
-    if x is not 0:
+    if mag_x is not 0:
         deg = math.atan2(mag_y/mag_x) * (180/math.pi)
         print('Degrees: {}'.format(deg))
 
