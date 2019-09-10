@@ -41,5 +41,4 @@ while True:
             print('GPS fix established')
             current_fix = True
 
-        
-        
+
