@@ -39,8 +39,10 @@ def listen_to_set_waypoint():
     if cpx.button_a:
         if gps.has_fix:
             waypoint = (gps.latitude, gps.longitude)
+            cpx.play_tone(294,1)
             print('Waypoint set to ({0:.6f},{0:.6f})'.format(gps.latitude, gps.longitude))
         else:
+            cpx.play_tone(230,1)
             print('Unable to set waypoint. No GPS fix.')
         while cpx.button_a:
             continue
@@ -70,6 +72,8 @@ while True:
 
     listen_to_set_waypoint()
 
+    cpx.red_led = gps.has_fix
+
     current = time.monotonic()
     if current - last_print >= 1.0:
         last_print = current
@@ -77,16 +81,16 @@ while True:
         acc_x, acc_y, acc_z = sensor.acceleration
         mag_x, mag_y, mag_z = sensor.magnetic
 
-        if not gps.has_fix and current_fix:
-            print('Lost GPS fix')
-            current_fix = False
-            cpx.pixels.fill((255,0,0))
-            continue
-        else if gps.has_fix and not current_fix:
-            print('GPS fix established')
-            current_fix = True
+        # if not gps.has_fix and current_fix:
+        #     print('Lost GPS fix')
+        #     current_fix = False
+        #     cpx.pixels.fill((255,0,0))
+        #     continue
+        # else if gps.has_fix and not current_fix:
+        #     print('GPS fix established')
+        #     current_fix = True
 
-        if current_fix and waypoint is not None:
+        if gps.has_fix and waypoint is not None:
             (dist, bearing) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
             displayPixelsOnSwitch()
 
