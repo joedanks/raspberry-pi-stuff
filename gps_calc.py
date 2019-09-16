@@ -17,10 +17,3 @@ def calcBearingAndDist(current, waypoint):
     bearingDeg = math.degrees(bearingRads)
 
     return (z, bearingDeg)
-
-
-print(calcBearingAndDist((40.668006, -91.316099), (40.661147, -91.321118)))
-# print('X: {0:.6f}'.format(x))
-# print('Y: {0:.6f}'.format(y))
-# print('Z: {0:.6f}'.format(z))
-# print('Bearing: {0:.1f}'.format(bearingDeg))
