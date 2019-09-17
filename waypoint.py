@@ -69,31 +69,12 @@ def displayPixelsOnSwitch():
 print('Searching for satellites...')
 while True:
     gps.update()
-
     listen_to_set_waypoint()
-
     cpx.red_led = gps.has_fix
-
     current = time.monotonic()
     if current - last_print >= 1.0:
         last_print = current
-
-        acc_x, acc_y, acc_z = sensor.acceleration
         mag_x, mag_y, mag_z = sensor.magnetic
-
-        # if not gps.has_fix and current_fix:
-        #     print('Lost GPS fix')
-        #     current_fix = False
-        #     cpx.pixels.fill((255,0,0))
-        #     continue
-        # else if gps.has_fix and not current_fix:
-        #     print('GPS fix established')
-        #     current_fix = True
-
         if gps.has_fix and waypoint is not None:
             (dist, bearing) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
             displayPixelsOnSwitch()
-
-            
-
-
