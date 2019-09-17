@@ -2,8 +2,8 @@ from utm import conversion
 import math
 
 def calcDistAndBearing(current, waypoint):
-    (aX, aY, aNum, aLet) = utm.from_latlon(current[0], current[1])
-    (bX, bY, bNum, bLet) = utm.from_latlon(waypoint[0], waypoint[1])
+    (aX, aY, aNum, aLet) = conversion.from_latlon(current[0], current[1])
+    (bX, bY, bNum, bLet) = conversion.from_latlon(waypoint[0], waypoint[1])
 
     x = abs(aX - bX)
     y = abs(aY - bY)
