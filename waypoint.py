@@ -5,7 +5,7 @@ import adafruit_lsm303
 import adafruit_gps
 import math
 import gps_calc
-from express import cpx
+from adafruit_circuitplayground.express import cpx
 
 ##### GPS ####################
 #   circuit python

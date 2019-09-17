@@ -1,4 +1,4 @@
-import utm
+from utm import conversion
 import math
 
 def calcDistAndBearing(current, waypoint):
