@@ -5,7 +5,16 @@ import adafruit_lsm303
 import adafruit_gps
 import math
 import gps_calc
-from adafruit_circuitplayground.express import cpx
+import neopixel
+import digitalio
+
+pixels = neopixel.NeoPixel(board.NEOPIXEL, 10)
+button_a = digitalio.DigitalInOut(board.BUTTON_A)
+button_a.switch_to_input(pull=digitalio.Pull.DOWN)
+switch = digitalio.DigitalInOut(board.SLIDE_SWITCH)
+switch.switch_to_input(pull=digitalio.Pull.UP)
+red_led = digitalio.DigitalInOut(board.D13)
+red_led.switch_to_output()
 
 ##### GPS ####################
 #   circuit python
@@ -26,7 +35,7 @@ i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_lsm303.LSM303(i2c)
 ##### Compass End ############
 
-cpx.pixels.brightness = 0.3
+pixels.brightness = 0.3
 
 last_print = time.monotonic()
 current_fix = False
@@ -36,32 +45,33 @@ dist = None
 bearing = None
 
 def listen_to_set_waypoint():
-    if cpx.button_a:
+    if button_a.value:
         if gps.has_fix:
+            global waypoint
             waypoint = (gps.latitude, gps.longitude)
-            cpx.play_tone(294,1)
-            print('Waypoint set to ({0:.6f},{0:.6f})'.format(gps.latitude, gps.longitude))
+            print(waypoint)
+            print('Waypoint set to ({:.6f},{:.6f})'.format(waypoint[0], waypoint[1]))
         else:
-            cpx.play_tone(230,1)
             print('Unable to set waypoint. No GPS fix.')
-        while cpx.button_a:
+        while button_a.value:
             continue
 
 def turnDistPixelsOn():
     if dist is not None:
-        cpx.pixels.fill((0, 0, 0))
+
+        pixels.fill((0, 255, 0))
         x = math.trunc(dist / 5)
         for n in range(x, 9):
-            cpx.pixels[n] = (0,255,0)
+            pixels[n] = (0,0,0)
 
 def turnBearingPixelOn():
     if bearing is not None:
-        cpx.pixels.fill((0,0,0))
+        pixels.fill((0,0,0))
         for x in gps_calc.computeDirectionPixel(bearing):
-            cpx.pixels[x] = (0,0,255)
+            pixels[x] = (0,0,255)
 
 def displayPixelsOnSwitch():
-    if cpx.switch:
+    if switch.value:
         turnBearingPixelOn()
     else:
         turnDistPixelsOn()
@@ -70,11 +80,15 @@ print('Searching for satellites...')
 while True:
     gps.update()
     listen_to_set_waypoint()
-    cpx.red_led = gps.has_fix
+    red_led.value = gps.has_fix
     current = time.monotonic()
     if current - last_print >= 1.0:
         last_print = current
         mag_x, mag_y, mag_z = sensor.magnetic
         if gps.has_fix and waypoint is not None:
-            (dist, bearing) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
+            (dist, direction) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
+            heading = math.atan2(mag_y, mag_x) * (180 / math.pi)
+            bearing = math.fabs(heading - direction)
+            print("Distance: {}".format(dist))
+            print("Bearing: {}".format(bearing))
             displayPixelsOnSwitch()
