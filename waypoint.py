@@ -3,11 +3,11 @@ import board
 import busio
 import adafruit_lsm303
 import adafruit_gps
+import math
 import gps_calc
 import neopixel
 import digitalio
 
-##### CPX Replacements #######
 pixels = neopixel.NeoPixel(board.NEOPIXEL, 10)
 button_a = digitalio.DigitalInOut(board.BUTTON_A)
 button_a.switch_to_input(pull=digitalio.Pull.DOWN)
@@ -58,9 +58,11 @@ def listen_to_set_waypoint():
 
 def turnDistPixelsOn():
     if dist is not None:
-        pixels.fill((0, 0, 0))
-        for n in gps_calc.computeDistancePixels(dist):
-            pixels[n] = (0,255,0)
+
+        pixels.fill((0, 255, 0))
+        x = math.trunc(dist / 5)
+        for n in range(x, 9):
+            pixels[n] = (0,0,0)
 
 def turnBearingPixelOn():
     if bearing is not None:
@@ -74,11 +76,6 @@ def displayPixelsOnSwitch():
     else:
         turnDistPixelsOn()
 
-def displaySatellites():
-    if gps.satellites is not None:
-        for n in range(gps.satellites):
-            pixels[n] = (255,0,0)
-
 print('Searching for satellites...')
 while True:
     gps.update()
@@ -89,10 +86,9 @@ while True:
         last_print = current
         mag_x, mag_y, mag_z = sensor.magnetic
         if gps.has_fix and waypoint is not None:
-            (dist, degrees_to_target) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
-            bearing = gps_calc.calculateDirection(mag_x, mag_y, degrees_to_target)
+            (dist, direction) = gps_calc.calcDistAndBearing((gps.latitude, gps.longitude), waypoint)
+            heading = math.atan2(mag_y, mag_x) * (180 / math.pi)
+            bearing = math.fabs(heading - direction)
             print("Distance: {}".format(dist))
             print("Bearing: {}".format(bearing))
             displayPixelsOnSwitch()
-        if not gps.has_fix:
-            displaySatellites()
