@@ -1,6 +1,10 @@
 from utm import conversion
 import math
 
+def calculateDirection(mag_x, mag_y, degrees_to_target):
+    current_heading = math.atan2(mag_y, mag_x) * (180 / math.pi)
+    return math.fabs(current_heading - bearing)
+
 def calcDistAndBearing(current, waypoint):
     (aX, aY, aNum, aLet) = conversion.from_latlon(current[0], current[1])
     (bX, bY, bNum, bLet) = conversion.from_latlon(waypoint[0], waypoint[1])
@@ -18,7 +22,11 @@ def calcDistAndBearing(current, waypoint):
 
     return (z, bearingDeg)
 
-def computeDirectionPixel (degrees):
+def computeDistancePixels(distance):
+    five_meter_intervals = math.trunc(distance / 5)
+    return range(0, 9 if five_meter_intervals > 9 else five_meter_intervals)
+
+def computeDirectionPixel(degrees):
     if degrees >= 342 or degrees < 18:
         return [7]
     if 324 <= degrees < 342:
