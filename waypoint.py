@@ -58,7 +58,6 @@ def listen_to_set_waypoint():
 
 def turnDistPixelsOn():
     if dist is not None:
-
         pixels.fill((0, 255, 0))
         x = math.trunc(dist / 5)
         for n in range(x, 9):
