@@ -12,7 +12,7 @@ sudo passwd
 raspi-config
 ```
 
-config.txt
+/boot/config.txt
 ---
 `hdmi_cvt=<width> <height> <framerate> <aspect> <margins> <interlace> <rb>`
 | Value  | Default	| Description |
