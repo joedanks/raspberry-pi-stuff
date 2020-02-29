@@ -4,6 +4,12 @@ sudo apt-get upgrade
 sudo reboot
 ```
 
+Wifi
+/etc/wpa_supplicant/wpa_supplicant.conf
+
+Staic IP
+/etc/dhcpcd.conf
+
 ```
 sudo passwd
 ```
