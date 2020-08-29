@@ -1,3 +1,4 @@
+https://www.aircrack-ng.org/doku.php?id=simple_wep_crack
 https://www.aircrack-ng.org/doku.php?id=cracking_wpa
 
 Scan for networks
